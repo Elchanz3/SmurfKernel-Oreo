@@ -1,13 +1,5 @@
-# 1 "arch/arm64/boot/dts/exynos/exynos8895-greatlte_eur_open_02.dts"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "arch/arm64/boot/dts/exynos/exynos8895-greatlte_eur_open_02.dts"
-# 12 "arch/arm64/boot/dts/exynos/exynos8895-greatlte_eur_open_02.dts"
 /dts-v1/;
-# 1 "arch/arm64/boot/dts/exynos/exynos8895-greatlte_common.dtsi" 1
-# 12 "arch/arm64/boot/dts/exynos/exynos8895-greatlte_common.dtsi"
-# 1 "arch/arm64/boot/dts/exynos/exynos8895-greatlte-rmem.dtsi" 1
-# 12 "arch/arm64/boot/dts/exynos/exynos8895-greatlte-rmem.dtsi"
+
 /memreserve/ 0xE0000000 0x1900000;
 
 / {
@@ -2579,6 +2571,7 @@
    dm-type = <1>;
 
    min-freq = <741000>;
+   max-freq = <2808000>;
 
 
    pm_qos-min-class = <5>;
@@ -6597,13 +6590,14 @@ samsung,tmu_sensor_type = <0x0>;
   sensing_mode = "max";
 
 
-  gpu_idx_num = <6>;
-  gpu_cooling_table = < 0 0 546000
-          0 1 455000
-          0 2 385000
-          0 3 338000
-          0 4 260000
-          0 5 (~1)>;
+  gpu_idx_num = <7>;
+  gpu_cooling_table = < 0 0 572000
+          0 1 546000
+	  0 2 455000
+	  0 3 385000
+	  0 4 338000
+	  0 5 260000
+          0 6 (~1)>;
 # 1 "arch/arm64/boot/dts/exynos/exynos8895-tmu-sensor-conf.dtsi" 1
 # 14 "arch/arm64/boot/dts/exynos/exynos8895-tmu-sensor-conf.dtsi"
 #thermal-sensor-cells = <0>;
@@ -6665,12 +6659,12 @@ samsung,tmu_sensor_type = <0x0>;
      type = "active";
     };
     mngs_alert0: mngs-alert0 {
-     temperature = <55000>;
+     temperature = <65000>;
      hysteresis = <2000>;
      type = "active";
     };
     mngs_alert1: mngs-alert1 {
-     temperature = <83000>;
+     temperature = <93000>;
      hysteresis = <5000>;
      type = "passive";
     };
@@ -6806,12 +6800,12 @@ samsung,tmu_sensor_type = <0x0>;
      type = "active";
     };
     gpu_alert0: gpu-alert0 {
-     temperature = <78000>;
+     temperature = <80000>;
      hysteresis = <2000>;
      type = "active";
     };
     gpu_alert1: gpu-alert1 {
-     temperature = <88000>;
+     temperature = <90000>;
      hysteresis = <5000>;
      type = "passive";
     };

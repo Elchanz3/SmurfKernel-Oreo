@@ -1,0 +1,55 @@
+#!/system/bin/sh
+
+cat << CTAG
+{
+    name:"CPU BOOST",
+    elements:[
+	{ SPane:{
+		title:"Dynamic Stune Boost",
+		description:"Set schedtune boosting"
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+	{ SSeekBar:{
+		title:"Boost value",
+		description:" ",
+		max:20,
+		min:0,
+		step:1,
+		default:$(cat /sys/module/cpu_boost/parameters/dynamic_stune_boost),
+		action:"generic /sys/module/cpu_boost/parameters/dynamic_stune_boost"
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+	{ SPane:{
+		title:"Input-Booster",
+		description:"Apply profiles for Key & TouchKey Input-Booster."
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+	{ SOptionList:{
+		title:"Key Boost",
+		description:"Select how the Input-Booster reacts to key events.\n",
+		default:$(echo "$(/res/synapse/actions/input key)"),
+		action:"input key",
+		values:[Default, Battery,]
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+	{ SOptionList:{
+		title:"Touch-Key Boost",
+		description:"Select how the Input-Booster reacts to touch-key events.\n",
+		default:$(echo "$(/res/synapse/actions/input touchkey)"),
+		action:"input touchkey",
+		values:[Default, Battery,]
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+    ]
+}
+CTAG

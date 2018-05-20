@@ -1,0 +1,34 @@
+#!/system/bin/sh
+
+cat << CTAG
+{
+    name:SECURITY,
+    elements:[
+	{ SPane:{
+		title:"SELinux (Security-Enhanced Linux)"
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+	{ SLiveLabel:{
+		title:"Status",
+		description:" ",
+		refresh:3000,
+		action:"live selinux_status"
+	}},
+	{ SSpacer:{
+		height:1
+	}},
+	{ SOptionList:{
+		title:"SELinux Security Policy",
+		description:"Change your SELinux status from Enforcing (policy is enforced) to Permissive (prints warnings instead of enforcing).\n",
+		default:$(getenforce),
+		action:"devtools selinux",
+		values:[Enforcing, Permissive,]
+	}},
+	{ SSpacer:{
+		height:2
+	}},
+    ]
+}
+CTAG

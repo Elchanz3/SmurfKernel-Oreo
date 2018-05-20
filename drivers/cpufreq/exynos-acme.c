@@ -27,6 +27,12 @@
 
 #include "exynos-acme.h"
 
+// AP: Default startup frequencies
+#define CONFIG_EXYNOS_CPU_FREQ_MIN_CLUSTER1	455000
+#define CONFIG_EXYNOS_CPU_FREQ_MAX_CLUSTER1	1690000
+#define CONFIG_EXYNOS_CPU_FREQ_MIN_CLUSTER2	741000
+#define CONFIG_EXYNOS_CPU_FREQ_MAX_CLUSTER2	2314000
+
 /*
  * list head of cpufreq domain
  */
@@ -279,15 +285,38 @@ static int exynos_cpufreq_driver_init(struct cpufreq_policy *policy)
 
 	ret = cpufreq_table_validate_and_show(policy, domain->freq_table);
 	if (ret) {
+		if (policy->cpu <= 3)
+		{
+			policy->cpuinfo.min_freq = CONFIG_EXYNOS_CPU_FREQ_MIN_CLUSTER1;
+			policy->cpuinfo.max_freq = CONFIG_EXYNOS_CPU_FREQ_MAX_CLUSTER1;
+		}
+
+		if (policy->cpu >= 4)
+		{
+			policy->cpuinfo.min_freq = CONFIG_EXYNOS_CPU_FREQ_MIN_CLUSTER2;
+			policy->cpuinfo.max_freq = CONFIG_EXYNOS_CPU_FREQ_MAX_CLUSTER2;
+        	}
 		pr_err("%s: invalid frequency table: %d\n", __func__, ret);
 		return ret;
 	}
+	// AP: set default frequencies to prevent overclocking or underclocking during start
+	if (policy->cpu <= 3)
+	{
+		policy->min = CONFIG_EXYNOS_CPU_FREQ_MIN_CLUSTER1;
+		policy->max = CONFIG_EXYNOS_CPU_FREQ_MAX_CLUSTER1;
+	}
+
+	if (policy->cpu >= 4)
+	{
+		policy->min = CONFIG_EXYNOS_CPU_FREQ_MIN_CLUSTER2;
+		policy->max = CONFIG_EXYNOS_CPU_FREQ_MAX_CLUSTER2;
+        }
 
 	policy->cur = get_freq(domain);
 	policy->cpuinfo.transition_latency = TRANSITION_LATENCY;
 	cpumask_copy(policy->cpus, &domain->cpus);
 
-	pr_info("CPUFREQ domain%d registered\n", domain->id);
+	pr_debug("CPUFREQ domain%d registered\n", domain->id);
 
 	return 0;
 }
@@ -1007,7 +1036,7 @@ static ssize_t store_cpufreq_min_limit_wo_boost(struct kobject *kobj,
 		 * print a message to avoid confusing who activated hmp_boost.
 		 */
 		if (domain == last_domain() && hmp_boost)
-			pr_info("HMP boost was already activated by cpufreq_min_limit node");
+			pr_debug("HMP boost was already activated by cpufreq_min_limit node");
 #endif
 
 		freq = min(freq, domain->max_freq);
@@ -1186,32 +1215,32 @@ static void print_domain_info(struct exynos_cpufreq_domain *domain)
 	int i;
 	char buf[10];
 
-	pr_info("CPUFREQ of domain%d cal-id : %#x\n",
+	pr_debug("CPUFREQ of domain%d cal-id : %#x\n",
 			domain->id, domain->cal_id);
 
 	scnprintf(buf, sizeof(buf), "%*pbl", cpumask_pr_args(&domain->cpus));
-	pr_info("CPUFREQ of domain%d sibling cpus : %s\n",
+	pr_debug("CPUFREQ of domain%d sibling cpus : %s\n",
 			domain->id, buf);
 
-	pr_info("CPUFREQ of domain%d boot freq = %d kHz, resume freq = %d kHz\n",
+	pr_debug("CPUFREQ of domain%d boot freq = %d kHz, resume freq = %d kHz\n",
 			domain->id, domain->boot_freq, domain->resume_freq);
 
-	pr_info("CPUFREQ of domain%d max freq : %d kHz, min freq : %d kHz\n",
+	pr_debug("CPUFREQ of domain%d max freq : %d kHz, min freq : %d kHz\n",
 			domain->id,
 			domain->max_freq, domain->min_freq);
 
-	pr_info("CPUFREQ of domain%d PM QoS max-class-id : %d, min-class-id : %d\n",
+	pr_debug("CPUFREQ of domain%d PM QoS max-class-id : %d, min-class-id : %d\n",
 			domain->id,
 			domain->pm_qos_max_class, domain->pm_qos_min_class);
 
-	pr_info("CPUFREQ of domain%d table size = %d\n",
+	pr_debug("CPUFREQ of domain%d table size = %d\n",
 			domain->id, domain->table_size);
 
 	for (i = 0; i < domain->table_size; i ++) {
 		if (domain->freq_table[i].frequency == CPUFREQ_ENTRY_INVALID)
 			continue;
 
-		pr_info("CPUFREQ of domain%d : L%2d  %7d kHz\n",
+		pr_debug("CPUFREQ of domain%d : L%2d  %7d kHz\n",
 			domain->id,
 			domain->freq_table[i].driver_data,
 			domain->freq_table[i].frequency);
@@ -1381,13 +1410,13 @@ static __init void set_boot_qos(struct exynos_cpufreq_domain *domain,
 	 * set cpufreq max limit as frequency of "pm_qos-jigbooting" in device tree.
 	 */
 #if defined(CONFIG_SEC_PM) && defined(CONFIG_SEC_FACTORY)
-	pr_info("%s:jig_attached = %d\n", __func__, jig_attached);
+	pr_debug("%s:jig_attached = %d\n", __func__, jig_attached);
 
 	if(jig_attached && !of_property_read_u32(dn, "pm_qos-jigbooting", &val)) {	
 		pm_qos_update_request_timeout(&domain->max_qos_req,
 				val, 100 * USEC_PER_SEC);
 		
-		pr_info("%s:Jig detected!. Set cpufreq max limit as %d for 100 secs(cpufreq-domain%d)\n", 
+		pr_debug("%s:Jig detected!. Set cpufreq max limit as %d for 100 secs(cpufreq-domain%d)\n", 
 			__func__, val, domain->id);
 	}
 #endif
@@ -1605,6 +1634,10 @@ static __init int init_domain(struct exynos_cpufreq_domain *domain,
 	if (!of_property_read_u32(dn, "min-freq", &val))
 		domain->min_freq = max(domain->min_freq, val);
 
+	/* Override max-freq */
+	if (domain->id == 1)
+ 		domain->max_freq = 2808000;
+
 	/* Default QoS for user */
 	if (!of_property_read_u32(dn, "user-default-qos", &val))
 		domain->user_default_qos = val;
@@ -1668,7 +1701,7 @@ init_table:
 	 */
 	init_dm(domain, dn);
 
-	pr_info("Complete to initialize cpufreq-domain%d\n", domain->id);
+	pr_debug("Complete to initialize cpufreq-domain%d\n", domain->id);
 
 	return ret;
 }
@@ -1859,7 +1892,7 @@ static int __init exynos_cpufreq_init(void)
 		cpufreq_update_policy(cpumask_first(&domain->cpus));
 	}
 
-	pr_info("Initialized Exynos cpufreq driver\n");
+	pr_debug("Initialized Exynos cpufreq driver\n");
 
 	return ret;
 }

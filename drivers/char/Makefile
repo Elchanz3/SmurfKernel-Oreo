@@ -63,3 +63,4 @@ obj-$(CONFIG_MST_LDO)		+= mst_ctrl.o
 
 obj-$(CONFIG_TILE_SROM)		+= tile-srom.o
 obj-$(CONFIG_XILLYBUS)		+= xillybus/
+obj-$(CONFIG_FRANDOM) 		+= frandom.o

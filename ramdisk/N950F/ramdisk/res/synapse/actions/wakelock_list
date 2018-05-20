@@ -1,0 +1,20 @@
+#!/system/bin/sh
+
+value="$1"
+sysfs="/sys/class/misc/boeffla_wakelock_blocker/wakelock_blocker"
+
+if [ "$value" != "" ]; then
+	if [ $value == "None" ] || [ $(echo $value|wc -m) -le 3  ]; then
+		echo "" > $sysfs
+	else
+		echo "$value" > $sysfs
+	fi
+fi
+
+ret="`cat $sysfs`"
+
+if [ "$ret" == "" ]; then
+	echo "None"
+else
+	echo "$ret"
+fi

@@ -1134,6 +1134,19 @@ config TOUCHSCREEN_DUMP_MODE
 
 	  If unsure, say N.
 
+config SWEEP2SLEEP
+       tristate "Sweep to put device to sleep"
+       default y
+       help
+         Say Y here to support sweep2sleep
+
+config SWEEP2SLEEP_G950
+       tristate "Sweep to put device to sleep"
+			 depends on SWEEP2SLEEP
+       default n
+       help
+         Say Y here to support sweep2sleep_g950
+
 source "drivers/input/touchscreen/stm/Kconfig"
 source "drivers/input/touchscreen/stm/fts7/Kconfig"
 source "drivers/input/touchscreen/sec_ts/Kconfig"

@@ -3252,6 +3252,10 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
 void cpufreq_remove_update_util_hook(int cpu);
 #endif /* CONFIG_CPU_FREQ */
 
+#ifdef CONFIG_DYNAMIC_STUNE_BOOST
+extern int sched_dynamic_stune_boost;
+#endif /* CONFIG_DYNAMIC_STUNE_BOOST */
+
 #ifdef CONFIG_SCHED_HP_EVENT
 void hp_event_update(struct sched_entity *se);
 #else

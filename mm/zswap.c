@@ -98,7 +98,7 @@ static bool zswap_enabled = 1;
 module_param_named(enabled, zswap_enabled, bool, 0644);
 
 /* Crypto compressor to use */
-#define ZSWAP_COMPRESSOR_DEFAULT "lzo"
+#define ZSWAP_COMPRESSOR_DEFAULT "lz4"
 #define ZSWAP_COMPRESSOR "lz4"
 static char *zswap_compressor = ZSWAP_COMPRESSOR;
 static int zswap_compressor_param_set(const char *,
@@ -112,7 +112,7 @@ module_param_cb(compressor, &zswap_compressor_param_ops,
 		&zswap_compressor, 0644);
 
 /* Compressed storage zpool to use */
-#define ZSWAP_ZPOOL_DEFAULT "zsmalloc"
+#define ZSWAP_ZPOOL_DEFAULT "z3fold"
 static char *zswap_zpool_type = ZSWAP_ZPOOL_DEFAULT;
 static int zswap_zpool_param_set(const char *, const struct kernel_param *);
 static struct kernel_param_ops zswap_zpool_param_ops = {
