@@ -43,7 +43,7 @@ dream2lte)
 greatlte)
 	case $VARIANT in
 	can|duos|eur|xx)
-		KERNEL_DEFCONFIG=exynos8895-greatlte_defconfig
+		KERNEL_DEFCONFIG=exynos8895-greatlte_eur_open_defconfig
 		;;
 	*)
 		echo "Unknown variant: $VARIANT"
