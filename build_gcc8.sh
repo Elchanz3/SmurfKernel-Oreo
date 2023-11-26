@@ -4,7 +4,7 @@
 export MODEL=greatlte
 export VARIANT=eur
 export ARCH=arm64
-export BUILD_CROSS_COMPILE=/media/pappschlumpf/2748a835-0c60-05d2-85f2-c36d45675d521/Toolchains/aarch64-linux-android-6.x_uber/bin/aarch64-linux-android-
+export BUILD_CROSS_COMPILE=/home/chanz22/tc/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-
 export BUILD_JOB_NUMBER=`grep processor /proc/cpuinfo|wc -l`
 
 RDIR=$(pwd)
