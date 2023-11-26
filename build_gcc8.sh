@@ -4,7 +4,7 @@
 export MODEL=greatlte
 export VARIANT=eur
 export ARCH=arm64
-export BUILD_CROSS_COMPILE=/home/chanz22/tc/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-
+export BUILD_CROSS_COMPILE=/home/chanz22/tc/UBERTC-aarch64-linux-android-6.0-kernel-2e6398ac9e86/bin/aarch64-linux-android-
 export BUILD_JOB_NUMBER=`grep processor /proc/cpuinfo|wc -l`
 
 RDIR=$(pwd)
@@ -178,114 +178,7 @@ FUNC_BUILD_KERNEL()
 	echo ""
 }
 
-FUNC_BUILD_RAMDISK()
-{
-	mv $RDIR/arch/$ARCH/boot/Image $RDIR/arch/$ARCH/boot/boot.img-zImage
-	mv $RDIR/arch/$ARCH/boot/dtb.img $RDIR/arch/$ARCH/boot/boot.img-dtb
 
-	case $MODEL in
-	dreamlte)
-		case $VARIANT in
-		can|duos|eur|xx)
-			rm -f $RDIR/ramdisk/G950F/split_img/boot.img-zImage
-			rm -f $RDIR/ramdisk/G950F/split_img/boot.img-dtb
-			mv -f $RDIR/arch/$ARCH/boot/boot.img-zImage $RDIR/ramdisk/G950F/split_img/boot.img-zImage
-			mv -f $RDIR/arch/$ARCH/boot/boot.img-dtb $RDIR/ramdisk/G950F/split_img/boot.img-dtb
-			cd $RDIR/ramdisk/G950F
-			./repackimg.sh
-			echo SEANDROIDENFORCE >> image-new.img
-			;;
-		*)
-			echo "Unknown variant: $VARIANT"
-			exit 1
-			;;
-		esac
-	;;
-	dream2lte)
-		case $VARIANT in
-		can|duos|eur|xx)
-			rm -f $RDIR/ramdisk/G955F/split_img/boot.img-zImage
-			rm -f $RDIR/ramdisk/G955F/split_img/boot.img-dtb
-			mv -f $RDIR/arch/$ARCH/boot/boot.img-zImage $RDIR/ramdisk/G955F/split_img/boot.img-zImage
-			mv -f $RDIR/arch/$ARCH/boot/boot.img-dtb $RDIR/ramdisk/G955F/split_img/boot.img-dtb
-			cd $RDIR/ramdisk/G955F
-			./repackimg.sh
-			echo SEANDROIDENFORCE >> image-new.img
-			;;
-		*)
-			echo "Unknown variant: $VARIANT"
-			exit 1
-			;;
-		esac
-	;;
-	greatlte)
-		case $VARIANT in
-		can|duos|eur|xx)
-			rm -f $RDIR/ramdisk/N950F/split_img/boot.img-zImage
-			rm -f $RDIR/ramdisk/N950F/split_img/boot.img-dtb
-			mv -f $RDIR/arch/$ARCH/boot/boot.img-zImage $RDIR/ramdisk/N950F/split_img/boot.img-zImage
-			mv -f $RDIR/arch/$ARCH/boot/boot.img-dtb $RDIR/ramdisk/N950F/split_img/boot.img-dtb
-			cd $RDIR/ramdisk/N950F
-			./repackimg.sh
-			echo SEANDROIDENFORCE >> image-new.img
-			;;
-		*)
-			echo "Unknown variant: $VARIANT"
-			exit 1
-			;;
-		esac
-	;;
-	*)
-		echo "Unknown device: $MODEL"
-		exit 1
-		;;
-	esac
-}
-
-FUNC_BUILD_ZIP()
-{
-	cd $RDIR/build
-	rm $MODEL-$VARIANT.img
-	case $MODEL in
-	dreamlte)
-		case $VARIANT in
-		can|duos|eur|xx)
-			mv -f $RDIR/ramdisk/G950F/image-new.img $RDIR/build/$MODEL-$VARIANT.img
-			;;
-		*)
-			echo "Unknown variant: $VARIANT"
-			exit 1
-			;;
-		esac
-	;;
-	dream2lte)
-		case $VARIANT in
-		can|duos|eur|xx)
-			mv -f $RDIR/ramdisk/G955F/image-new.img $RDIR/build/$MODEL-$VARIANT.img
-			;;
-		*)
-			echo "Unknown variant: $VARIANT"
-			exit 1
-			;;
-		esac
-	;;
-	greatlte)
-		case $VARIANT in
-		can|duos|eur|xx)
-			mv -f $RDIR/ramdisk/N950F/image-new.img $RDIR/build/$MODEL-$VARIANT.img
-			;;
-		*)
-			echo "Unknown variant: $VARIANT"
-			exit 1
-			;;
-		esac
-	;;
-	*)
-		echo "Unknown device: $MODEL"
-		exit 1
-		;;
-	esac
-}
 
 # MAIN FUNCTION
 rm -rf ./build.log
