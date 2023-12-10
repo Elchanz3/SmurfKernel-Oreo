@@ -5,7 +5,7 @@ mkdir out
 export ANDROID_MAJOR_VERSION=8
 export ANDROID_PLATFORM_VERSION=80000
 
-make O=out ARCH=arm64 exynos8895-greatlte_defconfig
+make O=out ARCH=arm64 exynos8895-greatlte_eur_open_defconfig
 
 DATE_START=$(date +"%s")
 
