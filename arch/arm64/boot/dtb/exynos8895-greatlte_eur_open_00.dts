@@ -2529,8 +2529,9 @@
    cal-id = <(0x0B040003)>;
    dm-type = <0>;
 
-   min-freq = <455000>;
+   min-freq = <832000>;
 
+   max-freq = <2002000>;
 
    pm_qos-min-class = <3>;
    pm_qos-max-class = <4>;
@@ -2574,8 +2575,9 @@
    cal-id = <(0x0B040002)>;
    dm-type = <1>;
 
-   min-freq = <741000>;
+   min-freq = <1066000>;
 
+   max-freq = <2808000>;
 
    pm_qos-min-class = <5>;
    pm_qos-max-class = <6>;

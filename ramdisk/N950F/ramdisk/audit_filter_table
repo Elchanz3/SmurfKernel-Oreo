@@ -146,8 +146,8 @@ auditfilter priv_app platform_app:dir { getattr search };
 auditfilter priv_app priv_app:dir { getattr search };
 auditfilter priv_app property_socket:sock_file write; comm="d.process.media"
 auditfilter priv_app same_process_hal_file:lnk_file read;
-auditfilter priv_app seapp_contexts_file:file read;
-auditfilter priv_app sepolicy_file:file read;
+auditfilter priv_app seapp_contexts_file:file read; 
+auditfilter priv_app sepolicy_file:file read; 
 auditfilter priv_app service_contexts_file:file read;
 auditfilter priv_app system_app_data_file:dir getattr;
 auditfilter priv_app timeservice_app:dir getattr;
@@ -201,7 +201,7 @@ auditfilter system_app apk_data_file:file { create write unlink }; comm="id.app.
 auditfilter system_app bluetooth:unix_stream_socket ioctl;
 auditfilter system_app config_gz:dir getattr;
 auditfilter system_app crash_dump:dir search;
-auditfilter system_app dalvikcache_data_file:file { read write execute };
+auditfilter system_app dalvikcache_data_file:file write;
 auditfilter system_app efs_file:file getattr;
 auditfilter system_app input_device:chr_file { read write };
 auditfilter system_app installd_service:service_manager find;
@@ -334,7 +334,7 @@ auditfilter vold efs_file:file create;
 auditfilter vold debugfs_tracing:file write;
 auditfilter wcnss_service serialno_prop:file { read open getattr };
 auditfilter webview_zygote cgroup:dir setattr;
-auditfilter webview_zygote tombstoned_crash_socket:sock_file write; comm="main"
+auditfilter webview_zygote tombstoned_crash_socket:sock_file write; comm="main" 
 auditfilter wificond system_app:fd use;
 auditfilter wlandutservice binder_device:chr_file { read write };
 auditfilter zygote untrusted_app_25:process ptrace;
@@ -342,7 +342,7 @@ auditfilter zygote untrusted_app_25:process ptrace;
 # http://mobilerndhub.sec.samsung.net/hub/site/seandroid/board/O_review_request/view/22696619
 # http://mobilerndhub.sec.samsung.net/hub/site/seandroid/board/O_review_request/view/22696595
 # avc: denied { getattr } for pid=9201 comm="getprop" path="/dev/__properties__/u:object_r:mobicore_prop:s0" dev="tmpfs" ino=10834 scontext=u:r:dumpstate:s0 tcontext=u:object_r:mobicore_prop:s0 tclass=file permissive=1 SEPF_SM-J337P_8.0.0_0001 unfiltered
-# avc: denied { open } for pid=9201 comm="getprop" path="/dev/__properties__/u:object_r:security_prop:s0" dev="tmpfs" ino=10835 scontext=u:r:dumpstate:s0 tcontext=u:object_r:security_prop:s0 tclass=file permissive=1 SEPF_SM-J337P_8.0.0_0001 unfiltered
+# avc: denied { open } for pid=9201 comm="getprop" path="/dev/__properties__/u:object_r:security_prop:s0" dev="tmpfs" ino=10835 scontext=u:r:dumpstate:s0 tcontext=u:object_r:security_prop:s0 tclass=file permissive=1 SEPF_SM-J337P_8.0.0_0001 unfiltered 
 # avc:  denied  { read } for  pid=29157 comm="ng.android.spay" name="mtp.0" dev="configfs" ino=20171 scontext=u:r:platform_app:s0:c512,c768 tcontext=u:object_r:configfs:s0 tclass=lnk_file permissive=0 SEPF_SM-G960F_8.0.0_0001 unfiltered
 auditfilter dumpstate mobicore_prop:file getattr;
 auditfilter dumpstate security_prop:file open;
@@ -398,7 +398,7 @@ auditfilter trustonicpartner_app logdw_socket:sock_file getattr;
 auditfilter trustonicpartner_app vold_socket:sock_file getattr;
 auditfilter trustonicpartner_app untrusted_app:dir search;
 
-# P171208-05493, P171205-07032,P171213-04518
+# P171208-05493, P171205-07032,P171213-04518 
 auditfilter platform_app sysfs_ss_writable:lnk_file read;
 auditfilter platform_app abox_sysfs:lnk_file { getattr read };
 auditfilter platform_app sysfs_thermal:lnk_file { getattr read };
@@ -406,12 +406,12 @@ auditfilter platform_app serial_device:chr_file { getattr read };
 auditfilter platform_app device:chr_file { getattr read };
 auditfilter platform_app radio_block_device:blk_file { getattr read };
 
-# P171212-00516
+# P171212-00516 
 auditfilter system_server wlandutservice_service:service_manager find;
 
-# http://mobilerndhub.sec.samsung.net/hub/site/seandroid/board/O_review_request/view/22710359
+# http://mobilerndhub.sec.samsung.net/hub/site/seandroid/board/O_review_request/view/22710359 
 auditfilter platform_app platform_app:dir { search read };
-auditfilter platform_app untrusted_app:dir read;
+auditfilter platform_app untrusted_app:dir read; 
 auditfilter platform_app isolated_app:dir read;
 auditfilter platform_app sec_untrusted_app:dir read;
 auditfilter platform_app filtered_untrusted_app:dir read;
@@ -441,7 +441,7 @@ auditfilter priv_app firmware_file:file read;
 auditfilter priv_app vndservice_contexts_file:file read;
 
 
-# P171219-00896 P171219-00380
+# P171219-00896 P171219-00380 
 auditfilter untrusted_app_25 input_device:chr_file getattr;
 auditfilter priv_app untrusted_app:dir read;
 
@@ -455,14 +455,14 @@ auditfilter platform_app omr_block_device:blk_file getattr;
 # http://mobilerndhub.sec.samsung.net/hub/site/seandroid/board/O_review_request/view/22715246
 auditfilter platform_app app_data_file:file execute_no_trans;
 
-# P171219-03715 P171219-03719 P171219-03646
+# P171219-03715 P171219-03719 P171219-03646 
 auditfilter trustonicpartner_app platform_app:dir search;
 auditfilter filtered_untrusted_app proc:file getattr;
 
 # P171219-07392
 auditfilter priv_app nfc_data_file:dir getattr;
 
-# P171219-05589
+# P171219-05589 
 auditfilter priv_app serialno_prop:file read;
 
 # http://mobilerndhub.sec.samsung.net/hub/site/seandroid/board/O_review_request/view/22726429
@@ -502,7 +502,7 @@ auditfilter ephemeral_app proc:file read;
 # avc:  denied  { write } for  pid=518 comm="pboarduiservice" name="clipboard150" dev="dm-1" ino=131073 scontext=u:r:system_app:s0 tcontext=u:object_r:knox_clipboard_file:s0:c662,c768 tclass=dir permissive=0 SEPF_SM-N950F_8.0.0_0001 unfiltered
 auditfilter system_app knox_clipboard_file:dir write;
 
-# P180103-04895
+# P180103-04895 
 auditfilter dexoptanalyzer app_data_file:file write;
 auditfilter dexoptanalyzer kernel:fd use;
 auditfilter priv_app security_system_file:file read;
@@ -574,3 +574,4 @@ auditfilter priv_app system_data_file:dir write;
 # P180205-05594
 auditfilter system_app vfat:lnk_file setattr;
 auditfilter system_app sdcardfs:lnk_file getattr;
+

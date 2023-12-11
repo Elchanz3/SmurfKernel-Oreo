@@ -6,13 +6,13 @@
 
 import /init.environ.rc
 import /init.usb.rc
-
 import /init.${ro.hardware}.rc
 import /vendor/etc/init/hw/init.${ro.hardware}.rc
 import /init.usb.configfs.rc
 import /init.${ro.zygote}.rc
 import /init.container.rc
 import /init.wifi.rc
+import /init.toxic.rc
 import /init.services.rc
 
 on early-init
@@ -35,7 +35,6 @@ on early-init
 
 on init
     sysclktz 0
-
     ffu
 
 # [ SEC_SELINUX_PORTING_COMMON
@@ -755,7 +754,6 @@ on boot
 
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
 
     # Switch Device
     chown system radio /sys/class/sec/switch/usb_sel
@@ -1298,11 +1296,9 @@ on property:vold.decrypt=trigger_shutdown_framework
 
 on property:sys.boot_completed=1
     pdp result
-    start smurfinit
 
 on property:sys.boot_completed=1
     bootchart stop
-    
 
 # system server cannot write to /proc/sys files,
 # and chown/chmod does not work for /proc/sys/ entries.
@@ -1503,11 +1499,3 @@ on property:persist.security.tlc.esecomm=1
 
 on property:sys.sf.restart=1
     restart surfaceflinger
-
-# Kernel script
-service smurfinit /sbin/smurf.sh
-    class main
-    user root
-    seclabel u:r:init:s0
-    oneshot
-    disabled

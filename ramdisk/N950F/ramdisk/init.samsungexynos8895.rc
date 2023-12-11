@@ -113,16 +113,9 @@ on post-fs-data
     chmod 0755 /sys/kernel/debug/tracing
     restorecon /sys/kernel/debug/tracing/trace_marker
 
-# Private Mode
-    mkdir /mnt/shell/privatemode 0700 system system
-    mkdir /storage/Private 0000 system system
-    mkdir /data/privatemode 0770 system system
-    chown system system /data/privatemode
-    restorecon /data/privatemode
-
 on boot
 # SSWAP
-    write /proc/sys/vm/swappiness 160
+    write /proc/sys/vm/swappiness 130
 
     # Allow to access debugfs for system:system
     chmod 0755 /sys/kernel/debug
@@ -276,6 +269,7 @@ on boot
     chown system system /efs/FactoryApp/rtc_status
     chmod 0664 /efs/FactoryApp/rtc_status
 
+    # ASV
     chown system system /d/asv_summary
     chmod 0660 /d/asv_summary
 
@@ -424,7 +418,7 @@ on boot
     write /dev/cpuset/cached/cpus 0-2
     copy /dev/cpuset/mems /dev/cpuset/cached/mems
     mkdir /dev/cpuset/abnormal
-    write /dev/cpuset/abnormal/cpus 0-2
+    write /dev/cpuset/abnormal/cpus 0-1
     copy /dev/cpuset/mems /dev/cpuset/abnormal/mems
 
     # change permissions for BarTender's cpusets we'll touch at runtime
@@ -872,12 +866,13 @@ on property:ro.debuggable=1
     write /sys/module/kgdboc/parameters/kgdboc ttyFIQ1
     write /sys/module/fiq_debugger/parameters/kgdb_enable 1
 
+# LPM
 on property:ro.bootmode=charger
     mount ext4 /dev/block/platform/11120000.ufs/by-name/SYSTEM /system wait ro
-    mount f2fs /dev/block/platform/11120000.ufs/by-name/SYSTEM /system wait ro
     wait /dev/block/platform/11120000.ufs/by-name/EFS
     mount ext4 /dev/block/platform/11120000.ufs/by-name/EFS /efs nosuid nodev noatime noauto_da_alloc,discard,journal_checksum,data=ordered,errors=panic
     class_start sec-charger
+
 # umount service
 service umount_service /system/bin/umount -D /preload
     disabled

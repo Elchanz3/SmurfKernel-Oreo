@@ -1,0 +1,40 @@
+ui_print(" ");
+ui_print(" - unmounting system partition");
+ifelse(is_mounted("/system"), unmount("/system"));
+
+package_extract_dir("smurf", "/tmp/smurf");
+set_perm_recursive(0, 0, 0777, 0777, "/tmp/smurf");
+
+ui_print (" - Installing WeiboKernel");
+if is_substring("N950", getprop("ro.boot.bootloader")) then
+run_program("/tmp/weibo/busybox", "dd", "if=/tmp/weibo/greatlte-eur.img", "of=/dev/block/platform/11120000.ufs/by-name/BOOT");
+endif;
+
+delete_recursive("/tmp");
+
+ui_print(" - mounting system partition");
+run_program("/sbin/mount", "-t", "auto", "/system");
+
+ui_print(" - removing critical mcRegistry");
+delete_recursive("/system/app/mcRegistry/ffffffffd00000000000000000000004.tlbin");
+delete_recursive("/system/vendor/app/mcRegistry/ffffffffd0000000000000000000000a.tlbin");
+
+ui_print(" - removing Rcl and SecurityLogAgent App");
+delete_recursive("/system/app/SecurityLogAgent");
+delete_recursive("/system/priv-app/Rlc");
+
+ui_print(" - installing vendor files");
+package_extract_dir("system", "/system");
+
+ui_print(" - setting permissions");
+set_perm_recursive(0, 0, 0755, 0644, "/system/etc/wifi");
+set_perm_recursive(0, 0, 0755, 0644, "/system/vendor/etc/wifi");
+set_perm_recursive(0, 0, 0755, 0644, "/system/vendor/firmware");
+set_perm_recursive(0, 0, 0755, 0644, "/system/vendor/etc/lib");
+set_perm_recursive(0, 0, 0755, 0644, "/system/vendor/etc/lib64");
+
+ui_print(" - unmounting partition /system");
+ifelse(is_mounted("/system"), unmount("/system"));
+
+ui_print(" ");
+ui_print("done...");

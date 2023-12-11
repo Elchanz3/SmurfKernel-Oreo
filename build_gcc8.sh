@@ -17,6 +17,10 @@ INCDIR=$RDIR/include
 PAGE_SIZE=2048
 DTB_PADDING=0
 
+VERSION=v0.1
+
+KERNELZIP=WeiboKernel-$VERSION
+
 case $MODEL in
 dreamlte)
 	case $VARIANT in
@@ -178,7 +182,121 @@ FUNC_BUILD_KERNEL()
 	echo ""
 }
 
+FUNC_BUILD_RAMDISK()
+{
+	mv $RDIR/arch/$ARCH/boot/Image $RDIR/arch/$ARCH/boot/boot.img-zImage
+	mv $RDIR/arch/$ARCH/boot/dtb.img $RDIR/arch/$ARCH/boot/boot.img-dtb
 
+	case $MODEL in
+	dreamlte)
+		case $VARIANT in
+		can|duos|eur|xx)
+			rm -f $RDIR/ramdisk/G950F/split_img/boot.img-zImage
+			rm -f $RDIR/ramdisk/G950F/split_img/boot.img-dtb
+			mv -f $RDIR/arch/$ARCH/boot/boot.img-zImage $RDIR/ramdisk/G950F/split_img/boot.img-zImage
+			mv -f $RDIR/arch/$ARCH/boot/boot.img-dtb $RDIR/ramdisk/G950F/split_img/boot.img-dtb
+			cd $RDIR/ramdisk/G950F
+			./repackimg.sh --nosudo
+			echo SEANDROIDENFORCE >> image-new.img
+			;;
+		*)
+			echo "Unknown variant: $VARIANT"
+			exit 1
+			;;
+		esac
+	;;
+	dream2lte)
+		case $VARIANT in
+		can|duos|eur|xx)
+			rm -f $RDIR/ramdisk/G955F/split_img/boot.img-zImage
+			rm -f $RDIR/ramdisk/G955F/split_img/boot.img-dtb
+			mv -f $RDIR/arch/$ARCH/boot/boot.img-zImage $RDIR/ramdisk/G955F/split_img/boot.img-zImage
+			mv -f $RDIR/arch/$ARCH/boot/boot.img-dtb $RDIR/ramdisk/G955F/split_img/boot.img-dtb
+			cd $RDIR/ramdisk/G955F
+			./repackimg.sh --nosudo
+			echo SEANDROIDENFORCE >> image-new.img
+			;;
+		*)
+			echo "Unknown variant: $VARIANT"
+			exit 1
+			;;
+		esac
+	;;
+	greatlte)
+		case $VARIANT in
+		can|duos|eur|xx)
+			rm -f $RDIR/ramdisk/N950F/split_img/boot.img-zImage
+			rm -f $RDIR/ramdisk/N950F/split_img/boot.img-dtb
+			mv -f $RDIR/arch/$ARCH/boot/boot.img-zImage $RDIR/ramdisk/N950F/split_img/boot.img-zImage
+			mv -f $RDIR/arch/$ARCH/boot/boot.img-dtb $RDIR/ramdisk/N950F/split_img/boot.img-dtb
+			cd $RDIR/ramdisk/N950F
+			./repackimg.sh --nosudo
+			echo SEANDROIDENFORCE >> image-new.img
+			;;
+		*)
+			echo "Unknown variant: $VARIANT"
+			exit 1
+			;;
+		esac
+	;;
+	*)
+		echo "Unknown device: $MODEL"
+		exit 1
+		;;
+	esac
+}
+
+FUNC_BUILD_ZIP()
+{
+	cd $RDIR/build
+	rm /weibo/$MODEL-$VARIANT.img
+	case $MODEL in
+	dreamlte)
+		case $VARIANT in
+		can|duos|eur|xx)
+			mv -f $RDIR/ramdisk/G950F/image-new.img $RDIR/build/weibo/dreamlte-eur.img
+			;;
+		*)
+			echo "Unknown variant: $VARIANT"
+			exit 1
+			;;
+		esac
+	;;
+	dream2lte)
+		case $VARIANT in
+		can|duos|eur|xx)
+			mv -f $RDIR/ramdisk/G950F/image-new.img $RDIR/build/weibo/dream2lte-eur.img
+			;;
+		*)
+			echo "Unknown variant: $VARIANT"
+			exit 1
+			;;
+		esac
+	;;
+	greatlte)
+		case $VARIANT in
+		can|duos|eur|xx)
+			mv -f $RDIR/ramdisk/N950F/image-new.img $RDIR/build/weibo/greatlte2-eur.img
+			;;
+		*)
+			echo "Unknown variant: $VARIANT"
+			exit 1
+			;;
+		esac
+	;;
+	*)
+		echo "Unknown device: $MODEL"
+		exit 1
+		;;
+	esac
+}
+
+FUNC_ZIP()
+{
+   cd "build" && zip -r9 "$KERNELZIP" .
+
+   mv "build/$KERNELZIP" "$RDIR/done_builds"
+}
 
 # MAIN FUNCTION
 rm -rf ./build.log
@@ -188,6 +306,7 @@ rm -rf ./build.log
 	FUNC_BUILD_KERNEL
 	FUNC_BUILD_RAMDISK
 	FUNC_BUILD_ZIP
+	FUNC_ZIP
 
 	END_TIME=`date +%s`
 	
